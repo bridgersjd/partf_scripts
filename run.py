@@ -36,6 +36,8 @@ def main(args):
 
     output = "number of samples = " + str(num_samples) + "\n"
 
+    
+
     red_minus_c13 = ["C20","C7","C8","C16","C11","C15","C18"]
     red = ["C20","C7","C8","C16","C11","C15","C18","C13"]
     green = ["C23", "C17", "C12", "C10", "C14", "C3"] + ["C19"]
@@ -44,8 +46,15 @@ def main(args):
     orange = ["C22", "C4", "C1"]
     two_and_five = ["C2", "C5"]
 
-
-    cells = green
+    cells = None
+    if args.clade == "red":
+        cells = red
+    elif args.clade == "green":
+        cells = green
+    elif args.clade == "blue":
+        cells = blue
+    else:
+        cells = orange
 
     all_cells = list(df_corrected.index)
     clade = {cell : 0 for cell in all_cells}
@@ -77,5 +86,7 @@ if __name__ == "__main__":
                         help="coef", required=True)
     parser.add_argument("-n", "--num_samples", type=int,                                                        
                         help="num_samples", required=True)
+    parser.add_argument("-C", "--clade", type=str,                                                        
+                        help="major clade", required=True)
     
     main(parser.parse_args())
