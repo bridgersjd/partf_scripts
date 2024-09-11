@@ -3,30 +3,12 @@ import pandas as pd
 import argparse
 
 def main(args):
-    # path = "/Users/john/Desktop/e_data/D.tsv"
-    # path = "/Users/john/Desktop/e_data/D-jun_12_2024.tsv"
-    # path = "/Users/john/Desktop/e_data/D-jun_13_2024.tsv"
-    path = "/home/bridgersjd/trisicell/data/data_temp/D-jun_13_2024.tsv"
-
-
-    # path = "/Users/john/Desktop/e_data/D_no_uninformative.tsv"
-    # path = "/Users/john/Desktop/e_data/D_with_26,27.tsv"
-    # path = "/Users/john/Desktop/e_data/SampledD_26,27.tsv"
+    path = args.patherror
 
     df = trisicell.io.read(path)
-    print(path)
-
-    # path_corrected = "/Users/john/Desktop/e_data/E-jun_13_2024-a_1e-8-b_0.075.tsv"
-    path_corrected = "/home/bridgersjd/trisicell/data/data_temp/E-jun_13_2024-a_1e-8-b_0.075.tsv"
-    df_corrected = pd.read_csv(path_corrected, sep="\t", index_col=[0]).sort_values(by=["cell_id_x_mut_id"])
-    alpha=10**(-8)
-    beta=0.075
-
-    # alpha=0.01
-    # beta=0.1
-
-    # alpha=0.1
-    # beta=0.25
+    
+    alpha=args.alpha
+    beta=args.beta
 
     divide = True
     num_samples = args.num_samples
@@ -46,38 +28,43 @@ def main(args):
     orange = ["C22", "C4", "C1"]
     two_and_five = ["C2", "C5"]
 
+
     cells = None
+    all_cells = list(df_corrected.index)
     if args.clade == "red":
         cells = red
     elif args.clade == "green":
         cells = green
     elif args.clade == "blue":
         cells = blue
-    else:
+    elif args.clade == "orange":
         cells = orange
+    else:
+        cells = list(set(all_cells) - set(two_and_five))
 
-    all_cells = list(df_corrected.index)
+    
     clade = {cell : 0 for cell in all_cells}
     clade.update({c : 1 for c in cells})
 
-    muts = []
-    for col in df_corrected.columns:
-        if dict(df_corrected[col]) == clade:
-            muts += [col]
+    
 
-    muts = muts[0:1]
+    muts = muts[args.mutation]
 
     names_to_cells = list(df.index)
 
-    print("\ndelta = " + str(delta) + " divide=" + str(divide) + " epsilon=" + str(eps) + " gamma (coef)=" + str(coef))
+    # print("\ndelta = " + str(delta) + " divide=" + str(divide) + " epsilon=" + str(eps) + " gamma (coef)=" + str(coef))
     pf = trisicell.tl.partition_function(df_input=df, alpha=alpha, beta=beta, n_samples=num_samples, n_batches=1, muts=muts, cells=cells, names_to_cells=names_to_cells,eps = eps, delta=delta, divide=divide, coef=coef)
-    output += str(cells) + "\n" + str(pf) + "\n\n"
+    # output += str(cells) + "\n" + str(pf) + "\n\n"
 
-    print(output)
+    output = args.patherror + "," + str(args.alpha) + "," + str(args.beta) + "," + args.clade + "," + args.num_samples + "," + args.mutation
+    output += "," + str(pf)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run.py')
 
+    parser.add_argument("-pe", "--patherror", type=str,                                                        
+                        help="input genotype matrix", required=True)
     parser.add_argument("-e", "--eps", type=float,                                                        
                         help="epsilon", required=True)
     parser.add_argument("-d", "--delta", type=float,                                                        
@@ -88,5 +75,12 @@ if __name__ == "__main__":
                         help="num_samples", required=True)
     parser.add_argument("-C", "--clade", type=str,                                                        
                         help="major clade", required=True)
+    parser.add_argument("-m", "--mutation", type=str,                                                        
+                        help="mutation", required=True)
+    parser.add_argument("-a", "--alpha", type=float,                                                        
+                        help="alpha (fp)", required=True)
+    parser.add_argument("-b", "--beta", type=float,                                                        
+                        help="beta (fn)", required=True)
+    
     
     main(parser.parse_args())
