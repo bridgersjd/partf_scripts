@@ -30,7 +30,7 @@ def main(args):
 
 
     cells = None
-    all_cells = list(df_corrected.index)
+    all_cells = list(df.index)
     if args.clade == "red":
         cells = red
     elif args.clade == "green":
@@ -48,7 +48,7 @@ def main(args):
 
     
 
-    muts = muts[args.mutation]
+    muts = [args.mutation]
 
     names_to_cells = list(df.index)
 
@@ -56,8 +56,9 @@ def main(args):
     pf = trisicell.tl.partition_function(df_input=df, alpha=alpha, beta=beta, n_samples=num_samples, n_batches=1, muts=muts, cells=cells, names_to_cells=names_to_cells,eps = eps, delta=delta, divide=divide, coef=coef)
     # output += str(cells) + "\n" + str(pf) + "\n\n"
 
-    output = args.patherror + "," + str(args.alpha) + "," + str(args.beta) + "," + args.clade + "," + args.num_samples + "," + args.mutation
-    output += "," + str(pf)
+    output = args.patherror + "," + str(args.alpha) + "," + str(args.beta) + "," + args.clade + "," + str(args.num_samples) + "," + args.mutation
+    output += "," + str(pf[0].iloc[0])
+    print(output)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 import pandas as pd
+import os
 
 def main():
-    folder = "/Users/john/Desktop/matrices/Sep9Matrices/"
+    folder = "/home/bridgersjd/trisicell/scripts_new/partf_scripts/Sep9Matrices/"
 
     files_raw = [
         "D-no_correction.tsv",
@@ -15,7 +16,7 @@ def main():
         "E-C19_and_C2C5_corrected-fp_0.0001-fn_0.075.tsv"
     ]
 
-    num_samples = 1000
+    num_samples = 50000
 
     clades = ["green", "blue", "orange", "red", "notC2C5"]
     for c in clades:
@@ -65,9 +66,9 @@ def main():
 
             for mut in muts:
                 cmd = "sbatch"
-                cmd += ' --job-name="' + 'partf.' + str(i) + '.' + c + '.' + mut + '"'
-                cmd += ' --output="' + 'partf.' + str(i) + '.' + c + '.' + mut + '.%j.out"'
-                cmd += ' --error="' + 'partf.' + str(i) + '.' + c + '.' + mut + '.%j.err"'
+                cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '"'
+                cmd += ' --output="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '.%j.out"'
+                cmd += ' --error="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '.%j.err"'
                 cmd += ' --export=CLADE="' + c + '"'
                 cmd += ',MUT="' + mut + '"'
                 cmd += ',ALPHA="' + str(alpha) + '"'
@@ -75,7 +76,7 @@ def main():
                 cmd += ',INPUT="' + path_raw + '"'
                 cmd += ',SAMPLES="' + str(num_samples) + '"'
                 cmd += ' run_partf.sbatch'
-                print(cmd)
+                os.system(cmd)
 
 
 if __name__ == "__main__":
