@@ -18,31 +18,9 @@ def main(args):
 
     output = "number of samples = " + str(num_samples) + "\n"
 
-    
+    cells = sorted(args.cells.split(","))
 
-    red_minus_c13 = ["C20","C7","C8","C16","C11","C15","C18"]
-    red = ["C20","C7","C8","C16","C11","C15","C18","C13"]
-    green = ["C23", "C17", "C12", "C10", "C14", "C3"] + ["C19"]
-    blue = ["C6", "C21", "C24", "C9"]
-    blue_with_c19 = blue + ["C19"]
-    orange = ["C22", "C4", "C1"]
-    two_and_five = ["C2", "C5"]
-
-
-    cells = None
-    all_cells = list(df.index)
-    if args.clade == "red":
-        cells = red
-    elif args.clade == "green":
-        cells = green
-    elif args.clade == "blue":
-        cells = blue
-    elif args.clade == "orange":
-        cells = orange
-    else:
-        cells = list(set(all_cells) - set(two_and_five))
-
-    
+    all_cells = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22", "C23", "C24"]
     clade = {cell : 0 for cell in all_cells}
     clade.update({c : 1 for c in cells})
 
@@ -56,8 +34,8 @@ def main(args):
     pf = trisicell.tl.partition_function(df_input=df, alpha=alpha, beta=beta, n_samples=num_samples, n_batches=1, muts=muts, cells=cells, names_to_cells=names_to_cells,eps = eps, delta=delta, divide=divide, coef=coef)
     # output += str(cells) + "\n" + str(pf) + "\n\n"
 
-    output = args.patherror + "," + str(args.alpha) + "," + str(args.beta) + "," + args.clade + "," + str(args.num_samples) + "," + args.mutation
-    output += "," + str(pf[0].iloc[0])
+    output = args.patherror + "\t" + str(args.alpha) + "\t" + str(args.beta) + "\t" + ",".join(cells) + "\t" + str(args.num_samples) + "\t" + args.mutation
+    output += "\t" + str(pf[0].iloc[0])
     print(output)
 
 
@@ -74,8 +52,8 @@ if __name__ == "__main__":
                         help="coef", required=True)
     parser.add_argument("-n", "--num_samples", type=int,                                                        
                         help="num_samples", required=True)
-    parser.add_argument("-C", "--clade", type=str,                                                        
-                        help="major clade", required=True)
+    parser.add_argument("-C", "--cells", type=str,                                                        
+                        help="cells (comma sep)", required=True)
     parser.add_argument("-m", "--mutation", type=str,                                                        
                         help="mutation", required=True)
     parser.add_argument("-a", "--alpha", type=float,                                                        
