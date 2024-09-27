@@ -54,11 +54,11 @@ def main():
 
             df_corrected = pd.read_csv(path_corrected, sep="\t", index_col=[0]).sort_values(by=["cell_id_x_mut_id"])
 
-            cells = ",".join(c)
+            cells = "_".join(c)
             all_cells = list(df_corrected.index)
 
             clade = {cell : 0 for cell in all_cells}
-            clade.update({c : 1 for c in cells})
+            clade.update({x : 1 for x in c})
 
             muts = []
             for col in df_corrected.columns:
@@ -67,9 +67,9 @@ def main():
 
             for mut in muts:
                 cmd = "sbatch"
-                cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '"'
-                cmd += ' --output="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '.%j.out"'
-                cmd += ' --error="' + 'job_partf.' + str(i) + '.' + c + '.' + mut + '.%j.err"'
+                cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '"'
+                cmd += ' --output="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.%j.out"'
+                cmd += ' --error="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.%j.err"'
                 cmd += ' --export=CELLS="' + cells + '"'
                 cmd += ',MUT="' + mut + '"'
                 cmd += ',ALPHA="' + str(alpha) + '"'
@@ -78,7 +78,7 @@ def main():
                 cmd += ',SAMPLES="' + str(num_samples) + '"'
                 cmd += ' run_partf.sbatch'
                 os.system(cmd)
-
+                print(cmd)
 
 if __name__ == "__main__":
     main()
