@@ -35,7 +35,7 @@ def main(args):
     # output += str(cells) + "\n" + str(pf) + "\n\n"
 
     output = args.patherror + "\t" + str(args.alpha) + "\t" + str(args.beta) + "\t" + ",".join(cells) + "\t" + str(args.num_samples) + "\t" + args.mutation
-    output += "\t" + str(pf[0].iloc[0][0]) + "\t" + str(pf[0].iloc[0][1])
+    output += "\t" + str(seed) + "\t" + str(pf[0].iloc[0][0]) + "\t" + str(pf[0].iloc[0][1])
     print(output)
 
 
