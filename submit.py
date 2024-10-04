@@ -16,7 +16,7 @@ def main():
         "E-C19_and_C2C5_corrected-fp_0.0001-fn_0.075.tsv"
     ]
 
-    num_samples = 60000
+    num_samples = 10000
 
     all_cells = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22", "C23", "C24"]
     red = ["C20","C7","C8","C16","C11","C15","C18","C13"]
@@ -30,6 +30,7 @@ def main():
 
     alphas = [0.001, 0.0001]
     betas = [0.075]
+    seeds = [0,1,2,3,4,5]
 
 
     for i in [0,1,2]:
@@ -61,21 +62,23 @@ def main():
                     muts += [col]
 
             for mut in muts:
-                for alpha in alphas:
-                    for beta in betas:
-                        cmd = "sbatch"
-                        cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '"'
-                        cmd += ' --output="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.out"'
-                        cmd += ' --error="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.err"'
-                        cmd += ' --export=CELLS="' + cells + '"'
-                        cmd += ',MUT="' + mut + '"'
-                        cmd += ',ALPHA="' + str(alpha) + '"'
-                        cmd += ',BETA="' + str(beta) + '"'
-                        cmd += ',INPUT="' + path_raw + '"'
-                        cmd += ',SAMPLES="' + str(num_samples) + '"'
-                        cmd += ' run_partf.sbatch'
-                        os.system(cmd)
-                        print(cmd)
+                for seed in seeds:
+                    for alpha in alphas:
+                        for beta in betas:
+                            cmd = "sbatch"
+                            cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '"'
+                            cmd += ' --output="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.out"'
+                            cmd += ' --error="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.err"'
+                            cmd += ' --export=CELLS="' + cells + '"'
+                            cmd += ',MUT="' + mut + '"'
+                            cmd += ',ALPHA="' + str(alpha) + '"'
+                            cmd += ',BETA="' + str(beta) + '"'
+                            cmd += ',SEED="' + str(seed) + '"'
+                            cmd += ',INPUT="' + path_raw + '"'
+                            cmd += ',SAMPLES="' + str(num_samples) + '"'
+                            cmd += ' run_partf.sbatch'
+                            os.system(cmd)
+                            print(cmd)
 
 if __name__ == "__main__":
     main()

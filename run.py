@@ -15,6 +15,7 @@ def main(args):
     delta = args.delta
     eps = args.eps
     coef = args.coef
+    seed = args.seed
 
     output = "number of samples = " + str(num_samples) + "\n"
     cells = sorted(args.cells.split("_"))
@@ -30,11 +31,11 @@ def main(args):
     names_to_cells = list(df.index)
 
     # print("\ndelta = " + str(delta) + " divide=" + str(divide) + " epsilon=" + str(eps) + " gamma (coef)=" + str(coef))
-    pf = trisicell.tl.partition_function(df_input=df, alpha=alpha, beta=beta, n_samples=num_samples, n_batches=1, muts=muts, cells=cells, names_to_cells=names_to_cells,eps = eps, delta=delta, divide=divide, coef=coef)
+    pf = trisicell.tl.partition_function(df_input=df, alpha=alpha, beta=beta, n_samples=num_samples, n_batches=1, muts=muts, cells=cells, names_to_cells=names_to_cells,eps = eps, delta=delta, divide=divide, coef=coef, my_seed=seed)
     # output += str(cells) + "\n" + str(pf) + "\n\n"
 
     output = args.patherror + "\t" + str(args.alpha) + "\t" + str(args.beta) + "\t" + ",".join(cells) + "\t" + str(args.num_samples) + "\t" + args.mutation
-    output += "\t" + str(pf[0].iloc[0])
+    output += "\t" + str(pf[0].iloc[0][0]) + "\t" + str(pf[0].iloc[0][1])
     print(output)
 
 
@@ -59,6 +60,8 @@ if __name__ == "__main__":
                         help="alpha (fp)", required=True)
     parser.add_argument("-b", "--beta", type=float,                                                        
                         help="beta (fn)", required=True)
+    parser.add_argument("-s", "--seed", type=int,                                                        
+                        help="random seed", required=True)
     
     
     main(parser.parse_args())
