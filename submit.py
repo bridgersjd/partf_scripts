@@ -28,8 +28,8 @@ def main():
         df_corrected = pd.read_csv(path_corrected, sep="\t", index_col=[0]).sort_values(by=["cell_id_x_mut_id"])
 
         for mut in df_corrected.columns:
-            col = df_corrected[mut].keys()
-            clade = sorted([c for c in col if col[c] == 1])
+            col = df_corrected[mut]
+            clade = sorted([c for c in col.keys() if col[c] == 1])
             cells = "_".join(clade)
             for seed in seeds:
                 for alpha in alphas:
