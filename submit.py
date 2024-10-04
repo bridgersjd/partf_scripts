@@ -16,7 +16,7 @@ def main():
         "E-C19_and_C2C5_corrected-fp_0.0001-fn_0.075.tsv"
     ]
 
-    num_samples = 10000
+    num_samples = 10
 
     all_cells = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "C22", "C23", "C24"]
     red = ["C20","C7","C8","C16","C11","C15","C18","C13"]
