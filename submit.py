@@ -32,53 +32,36 @@ def main():
     betas = [0.075]
     seeds = [0,1,2,3,4,5]
 
-
-    for i in [0,1,2]:
-        # 0 - no correction, 1 - C19 corrected, 2 - both corrections
-        clades = None
-        if i == 0:
-            clades = [red, blue_w_19, green_no_19, orange, not_two_and_five]
-        elif i == 1:
-            clades = [red, blue_no_19, green_w_19, orange, not_two_and_five]
-        else:
-            clades = [red, blue_no_19, green_w_19, orange]
-
-        for c in clades:
-            path_raw = folder + files_raw[i]
-            path_corrected = folder + files_corrected[i]
+    path_raw = folder + files_raw[i]
+    path_corrected = folder + files_corrected[i]
 
 
-            df_corrected = pd.read_csv(path_corrected, sep="\t", index_col=[0]).sort_values(by=["cell_id_x_mut_id"])
+    df_corrected = pd.read_csv(path_corrected, sep="\t", index_col=[0]).sort_values(by=["cell_id_x_mut_id"])
 
-            cells = "_".join(c)
-            all_cells = list(df_corrected.index)
-
-            clade = {cell : 0 for cell in all_cells}
-            clade.update({x : 1 for x in c})
-
-            muts = []
-            for col in df_corrected.columns:
-                if dict(df_corrected[col]) == clade:
-                    muts += [col]
-
-            for mut in muts:
-                for seed in seeds:
-                    for alpha in alphas:
-                        for beta in betas:
-                            cmd = "sbatch"
-                            cmd += ' --job-name="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '"'
-                            cmd += ' --output="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.out"'
-                            cmd += ' --error="' + 'job_partf.' + str(i) + '.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.err"'
-                            cmd += ' --export=CELLS="' + cells + '"'
-                            cmd += ',MUT="' + mut + '"'
-                            cmd += ',ALPHA="' + str(alpha) + '"'
-                            cmd += ',BETA="' + str(beta) + '"'
-                            cmd += ',SEED="' + str(seed) + '"'
-                            cmd += ',INPUT="' + path_raw + '"'
-                            cmd += ',SAMPLES="' + str(num_samples) + '"'
-                            cmd += ' run_partf.sbatch'
-                            os.system(cmd)
-                            print(cmd)
+    muts = []
+    if dict(df_corrected[col]) == clade:
+            muts += [col]
+    for mut in df_corrected.columns:
+        col = df_corrected[mut].keys()
+        clade = sorted([c for c in col if col[c] == 1])
+        cells = "_".join(clade)
+        for seed in seeds:
+            for alpha in alphas:
+                for beta in betas:
+                    cmd = "sbatch"
+                    cmd += ' --job-name="' + 'job_partf.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '"'
+                    cmd += ' --output="' + 'job_partf.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.out"'
+                    cmd += ' --error="' + 'job_partf.' + cells + '.' + mut + '.' + str(alpha) + '.' + str(beta) + '.%j.err"'
+                    cmd += ' --export=CELLS="' + cells + '"'
+                    cmd += ',MUT="' + mut + '"'
+                    cmd += ',ALPHA="' + str(alpha) + '"'
+                    cmd += ',BETA="' + str(beta) + '"'
+                    cmd += ',SEED="' + str(seed) + '"'
+                    cmd += ',INPUT="' + path_raw + '"'
+                    cmd += ',SAMPLES="' + str(num_samples) + '"'
+                    cmd += ' run_partf.sbatch'
+                    # os.system(cmd)
+                    print(cmd)
 
 if __name__ == "__main__":
     main()
