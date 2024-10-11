@@ -16,12 +16,13 @@ def main():
         "E-C19_and_C2C5_corrected-fp_0.0001-fn_0.075.tsv"
     ]
 
-    num_samples = 10
+    num_samples = 25000
 
-    alphas = [0.001, 0.0001]
+    alphas = [0.0001]
     betas = [0.075]
-    seeds = list(range(10))
-    for i in [0,1,2]:
+    seeds = [0,5]
+    matrices = [1]
+    for i in matrices:
         path_raw = folder + files_raw[i]
         path_corrected = folder + files_corrected[i]
 
@@ -46,7 +47,7 @@ def main():
                         cmd += ',INPUT="' + path_raw + '"'
                         cmd += ',SAMPLES="' + str(num_samples) + '"'
                         cmd += ' run_partf.sbatch'
-                        # os.system(cmd)
+                        os.system(cmd)
                         print(cmd)
 
 if __name__ == "__main__":
